@@ -31,7 +31,7 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 #Buat push ulang yang tadi error
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-BWBallShop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
 
 
 # Application definition
