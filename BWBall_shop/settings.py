@@ -29,6 +29,7 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#Buat push ulang yang tadi error
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-BWBallShop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
 
