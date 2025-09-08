@@ -29,8 +29,8 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#Buat push ulang yang tadi error
 
+#Buat push ulang karna authentication failed lagi 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
 
 
