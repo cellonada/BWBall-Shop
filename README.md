@@ -21,16 +21,30 @@ Menjawab Pertanyaan
 -Melakukan migrasi model dengan makemigrations dan migrate
 -Membuat berkas urls.py di direktori main dan mengisi file urls.py tersebut. Terakhir menjalankan proyek Django dengan python manage.py runserver
 
-2.HTTP Request (Client(Browser)) -> urls.py -> views.py -> models.py -> views.py -> HTTP Response(HTML)
+2.HTTP Request (Client(Browser)) -> urls.py 
+                                        |
+                        models.py  <- views.py -> HTTP Response(HTML)
+                                        ^
+                                        |
+                                Template (filename).html
 -urls.py berperan sebegai router global yang menerima request masuk dan meneruskan ke app yang sesuai
 -views.py berperan menangani request dengan mengambil data dari model, membuat context, dan me-render templat
 -models.py digunakan untuk mendefinisikan model baru dan berisikan field untuk merepresentasikan kolom di database
 -berkas html ini akan menerima context dari views.py dan akan menghasilkan html akhir
 
-3.Fungsi utama settings.py adalah sebagai pusat konfigurasi, seperti menentukan aplikasi yang terinstal(INSTALLED_APPS), membuat pengaturan keamanan (ALLOWED_HOSTS dan SECRET_KEY), Mengatur lokasi template (TEMPLATES), dan masih banyak lagi
+3.Fungsi utama settings.py adalah sebagai pusat konfigurasi, seperti menentukan aplikasi yang terinstal(INSTALLED_APPS), 
+membuat pengaturan keamanan (ALLOWED_HOSTS dan SECRET_KEY), Mengatur lokasi template (TEMPLATES), dan masih banyak lagi
 
-4.Migrasi sendiri merupakan cara Django melacak perubahan struktur database. Cara kerja migrasi databse di django yakni pertama-tama akan menjalankan 'makemigrations' yang akan mencatat perubahan model ke dalam file migrasi tetapi belum  mengubah database. Kemudian dilanjutkan dengan perintah 'migrate' agar django membaca file migrasi tersebut dan akan mengubah database sesuai model terbaru
+4.Migrasi sendiri merupakan cara Django melacak perubahan struktur database. 
+Cara kerja migrasi databse di django yakni pertama-tama akan menjalankan 'makemigrations' yang akan mencatat perubahan model 
+ke dalam file migrasi tetapi belum  mengubah database. Kemudian dilanjutkan dengan perintah 'migrate' agar django membaca file 
+migrasi tersebut dan akan mengubah database sesuai model terbaru
 
-5.Menurut saya framework django dijadikan permulaan karena kita telah mempelajari bahasa python di DDP1 serta menurut saya sendiri django memiliki struktur yang jelas sehingga mudah dipahami
+5.Menurut saya framework django dijadikan permulaan karena 
+a. Web framework DJango open source
+b. Dapat digunakan untuk skala yang besar ataupun kecil
+c. Dapat digunakan untuk berbagai jenis aplikasi (versatile) untuk berbagai macam kegunaan
+d. Banyak fitur bawaan tampa perlu install library tambahan
+e. ORM (Object Relational Mapper) memudahkan akses database tanpa harus menulis query SQL
 
 6.Di tutorial 1 asdos saya yaitu ka sayyid sangat fast respon dan sangat membantu kalau saya memiliki kendala
