@@ -149,4 +149,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#nambahin komen biar bisa push lagi karna error sebelumnyaaa
+#komen buat push github
