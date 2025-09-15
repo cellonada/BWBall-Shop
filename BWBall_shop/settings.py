@@ -150,3 +150,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #nambahin komen biar bisa push lagi karna error sebelumnyaaa
+#errorrr lagi pas push ke pws
