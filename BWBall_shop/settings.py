@@ -33,6 +33,9 @@ DEBUG = True
 #Buat push ulang kesekian kalinya heem
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"
+]
 
 # Application definition
 
@@ -61,7 +64,7 @@ ROOT_URLCONF = 'BWBall_shop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,6 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
 <h1>Hello, Welcome to BWBall Shop</h1>
+
 <p>nama : {{ name }}</p>
 <p>class : {{ class }}</p>
+
+<a href="{% url 'main:score_board' %}"><button>Score Board</button></a>
+<a href="{% url 'main:product_list' %}"><button>Our Product</button></a>
+
+{% endblock content %}
+
 
 
 

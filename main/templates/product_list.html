@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<p><a href="{% url 'main:show_main' %}"><button>← Back to Home Page</button></a></p>
+
+<div style="display: flex; gap: 10px; margin-bottom: 20px;"> 
+    <!-- Pake Flexbox buat ngatur biar 1 garis dan rapih jaraknya -->
+    <a href="{% url 'main:product_list' %}?filter=favorite"><button {% if filter_type == "favorite" %}disabled{% endif %}>Favorite</button></a>
+    <a href="{% url 'main:product_list' %}?filter=unfavorite"><button {% if filter_type == "unfavorite" %}disabled{% endif %}>Unfavorite</button></a>
+    <a href="{% url 'main:product_list' %}?filter=all"><button {% if filter_type == "all" %}disabled{% endif %}>All Products</button></a>
+</div>
+
+<div>
+    <a href="{% url 'main:add_product' %}"><button>+ Add Product</button></a>
+</div>
+
+<hr>
+
+{% if products %}
+    {% for product in products %}
+        <div>
+            <h3>{{ product.name }} - ⭐️ {{ product.rating }}</h3>
+            <p>{{ product.description }}</p>
+            
+            {% if product.thumbnail %}
+                <img src="{{ product.thumbnail }}" alt="Product thumbnail" width="100"><br /><br />
+            {% endif %}
+            <p>Kategori: {{ product.category }}</p>
+            <p>Harga: {{ product.price }}</p>
+            <a href="{% url 'main:product_detail' product.id %}">
+                <button>See Details</button>
+            </a>
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>Belum ada produk tersedia untuk kategori ini</p>
+{% endif %}
+
+{% endblock %}

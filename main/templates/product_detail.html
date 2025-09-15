@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'main:product_list' %}"><button>← Back to Products List</button></a></p>
+
+<h1>{{ product.name }}</h1>
+
+<p>
+    <b>Kategori: {{ product.category }}</b>
+    {% if product.is_featured %} | <b>Featured</b>{% endif %}
+    {% if product.is_favorite %} | <b>Favorite</b>{% endif %}
+    | ⭐️ Rating: {{ product.rating }}
+</p>
+
+{% if product.thumbnail %}
+    <img src="{{ product.thumbnail }}" alt="Product thumbnail" width="300">
+    <br /><br />
+{% endif %}
+
+<p>{{ product.description }}</p>
+
+<p><b>Harga:</b> Rp {{ product.price }}</p>
+<p><b>Stok tersedia:</b> {{ product.stock }}</p>
+
+{% endblock content %}  
