@@ -37,6 +37,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"
 ]
 
+#tesss
 # Application definition
 
 INSTALLED_APPS = [
