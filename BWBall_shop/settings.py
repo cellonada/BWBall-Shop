@@ -38,6 +38,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 #tesss
+#tesss
 # Application definition
 
 INSTALLED_APPS = [

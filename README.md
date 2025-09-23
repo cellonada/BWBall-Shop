@@ -83,3 +83,64 @@ c.add_product.html -> berfungsi untuk menambahkan suatu produk dimana terdapat f
 
 #Hasil postman
 ![Hasil Postman](images/hasil_postman.png)
+
+
+
+---------------------- R E A D M E T U G A S 4 -----------------------------
+1.Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+Django AuthenticationForm merupakan from bawaan Django yang digunakana saat proses memverifikasi seseorang ketika login. From ini secara otomatis akan memvalidasi username dengan password, serta kita tidak perlu membuat form login dari nol karena sudah tedapat class yang di siapkan oleh Django.
+#Kelebihan AuthenticationForm
+a. Dapat dikostumisasi ketika ingin menambahkan verfikasi seperti tanggal lahir dengan meng-extend
+b. Terdapat keamanan bawaan sehingga menghindari kesalahan umum saat membuat login system sendiri
+c. Praktis karena sudah ada form login bawaan django sehingga tidak perlu membuat dari awal
+#Kekurangan AutheticationForm
+a. Tampilan dari authetication form sederhana sehingga perlu penyesuaian dengan desian UI/UX agar memiliki tampilan lebih menarik
+b. Keamanan tambahan seperti CAPTHA ataupun 2FA tidak terdapat di sistem keamanan bawaan sehingga perlu ditambahkan secara manual
+
+2.Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+Perbedaan antara autentikasi dengan otorisasi yaitu, autentikasi merupakan proses memverifikasi data diri kita saat berusaha login, sedangkan otorisasi merupakan proses verifikasi apa saja yang dapat dilakukan oleh seseorang sesuai dengan rolenya.
+#Pengimplementasian Autentikasi
+a. Django menyediakan user model bawaan yang standar seperti username, password, dll
+b. Password disimpan dalam bentuk hash dan terdapat beberapa function bawaan seperti authenticate untuk meverifikasi kredensial, login untuk menyimpan user ke session, dan logout untuk menghapus session user.
+#Pengimplementasian Otorisasi
+a. Terdapat permission system dimana setiap model memiliki izin otomatis untuk add,d elete, change, dan view
+b. terdapat groups yang berisi kumpulan permission serta ada decorator untuk membatasi akses user sesuai dengan role nya
+
+3.Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+-SESSION
+#Kelebihan
+a.Ukuranya lebih fleksibel yakni dapat menyimpan data yang lebih besar daripada cookie
+b.Data sensitif lebih aman karena disimpannya di server bukan di browser
+c.Terdapat database model untuk menyimpan state user
+#Kekurangan
+a.Tetap membutuhkan cookie untuk menyimpan session ID agar proses identifikasi dapat dijalankan
+b.Diperlukan manajemen yang baik untuk memastikan masa berlaku session dab logout, serta menjaga dari serangan seperti session hijacking
+-COOKIES
+#Kelebihan
+a.Dapat di gunakan secara langsung karena data di simpan di dalam browser sehingga saat terdapat request otomatis terkirim ke server
+b.Dapat digunakan lintas browser dengan menggunakan persistent cookie
+#Kekurangan
+a.Ukurannya terbatas hanya sekitar 4KB per cookie sehingga hanya cocok di gunakan oleh data yang kecil
+b.Rawan terhadap serangan seperti Cross Site Scripting dimana cookie dapat tercuri
+
+4.Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+Secara default cookies tidak sepenuhnya aman dikarenakan cookies merupakan data yang disimpan langsung di browser. Risiko yang dapat terjadi misalnya Cross Site Scripting(XSS) dimana attacker dapat menucri cookie user, Session hijacking yaitu attacker dapat memakai session ID palsu untuk menjadi user lain, dan Cross Sote Reqeuest Forgery dimana attacker dapat memanfaatkan cookie terdapat di setiap request. Django menangani hal ini dengan menyediakan beberapa proteksi bawaaan seperti Session framework yaitu untuk data penting di simpannya di server sedangkan cookie hanya menyimpan session ID. Selain itu terdapat Secure flag dimana cookie hanya di kirim melalui HTTPS bukan HTTP biasa.
+
+5.Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+-Dalam views.py saya menambahkan beberapa import untuk memudahkan pembuatan formulir pendataan pengguna ke dalam aplikasi web, serta beberapa import untuk kegiatan login dan logout
+-Menambahkan import unruk date, reverse, serta HttpResponseRedirect
+-Membuat function baru yaitu register di views.py dan menambahkan import register di urls.py serta menambahkan pathnya
+-Membuat file register.html di direktori main/templates untuk membuat page baru agar user dapat mendaftarkan diri ke aplikasi web
+-Membuat function login_user di views.py isinya di tambahkan juga dengan last_login dan menambahkan import login_useer ke urls.py dan menambahkan path login_user
+-Membuat file login.html di direktori main/templates untuk membuat page baru agar sebelum masuk ke aplikasi akan diverifikasi apakah user sudah memiliki akun
+-Membuat function logout_user dan menambahkan import logout_user ke urls.py dan menambahkan pathnya kedalam urlpatterns
+-Diatas function show_main dan show_product ditambahkan @login_required 
+-Menambahkan last_login ke dalam variabel context yang ada di views.py pada function show_main
+-Menambahkan delete_cookie di functin logout_iuser di views.py untuk menghapus cookie las_login saat user logout/keluar dari akunnya
+-Menambahkan current_user di context pada function show_main untuk menunjukkan user yang sedang login saat ini
+-Di main.html saya memanggil current_user untuk menjadi header saat user pertama kali login
+-Menambahkan keterangan sesi terakhir login di main.html di bawah seluruh button yg tersedia di home page/main.html
+-Untuk menghubungkan Product dengan User maka saya mengubah models yang ada dengan menambahkan user di dalamnya kemudian saya melakukan migrate untuk mengupdate models yang terbaru agar tetap sesuai
+-Menambahkan kode product_entry pada function add_product di file views.py
+-Menambahkan author yang menambahkan sebuah produk pada file product_details.html di direktori main/templates
+-Melakukan add, commit, dan push 

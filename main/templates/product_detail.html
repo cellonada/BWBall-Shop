@@ -21,4 +21,10 @@
 <p><b>Harga:</b> Rp {{ product.price }}</p>
 <p><b>Stok tersedia:</b> {{ product.stock }}</p>
 
+{% if product.user %}
+    <p>Author: {{ product.user.username }}</p>
+{% else %}
+    <p>Author: Anonymous</p>
+{% endif %}
+
 {% endblock content %}  

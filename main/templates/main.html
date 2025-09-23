@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Hello, Welcome to BWBall Shop</h1>
-
-<p>nama : {{ name }}</p>
-<p>class : {{ class }}</p>
+<h1>Hello {{ current_user }}, Welcome to BWBall Shop</h1>
 
 <a href="{% url 'main:score_board' %}"><button>Score Board</button></a>
 <a href="{% url 'main:product_list' %}"><button>Our Product</button></a>
+
+
+<a href="{% url 'main:logout' %}"><button>Logout</button></a>
+<h5>Sesi terakhir login: {{ last_login }}</h5>
 
 {% endblock content %}
 
