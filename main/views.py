@@ -14,12 +14,14 @@ from main.forms import ProductForm
 # Create your views here.
 @login_required(login_url='/login')
 def show_main(request):
-
+    hot_products = Product.objects.filter(is_favorite=True)[:3]
     context = {
         'appName' : "BW Ball-Shop",
         'name' : 'Zhafira Celloanada',
-        'class' : 'PBP C',
+        'npm' : '2406495842',
+        'class' : 'PBP F',
         'current_user' : request.user.username,
+        'hot_products' : hot_products,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
     return render(request, "main.html", context)
@@ -28,8 +30,8 @@ def product_list(request):
     filter_type = request.GET.get("filter", "favorite") #ini di set defaultnya bakalan nampilin produk yg favorite
     if filter_type == "favorite":
         products = Product.objects.filter(is_favorite=True)
-    elif filter_type == "unfavorite":
-        products = Product.objects.filter(is_favorite=False)
+    elif filter_type == "my":
+        products = Product.objects.filter(user=request.user)
     else:
         products = Product.objects.all()
 
@@ -117,3 +119,21 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def edit_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+    if form.is_valid() and request.method == 'POST':
+        form.save()
+        return redirect('main:product_list')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:product_list'))

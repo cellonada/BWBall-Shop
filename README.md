@@ -144,3 +144,88 @@ Secara default cookies tidak sepenuhnya aman dikarenakan cookies merupakan data 
 -Menambahkan kode product_entry pada function add_product di file views.py
 -Menambahkan author yang menambahkan sebuah produk pada file product_details.html di direktori main/templates
 -Melakukan add, commit, dan push 
+
+
+---------------------- R E A D M E T U G A S 5 -----------------------------
+1.Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Urutan prioritas pengambilan CSS selector ketika ada beberapa CSS selector yg mengatur elemen HTML yang sama adalah browser akan memilih urutan berdasarkan urutan deklarasi dan spesifisitas. Urutannya adalah:
+-⁠ ⁠!important misalnya
+p {
+  color:pink !important;
+}
+ini yang akan di pakai meskipus ada inline style ataupun ID
+-⁠ ⁠Inline Style misalnya 
+<p style="color: blue;">Teks</p> maka properti color blue akan di pilih meskipun terdapat aturan lain di file CSS
+- ⁠ID Selector misalnya
+#title {
+  color: pink;
+}
+selector #title akan lebih dominan di bandingkan .class ataupun tag
+-⁠ ⁠Class, Atribut dan Pseudo-clas Selector misalnya
+.information {
+  color: yellow;
+}
+input[type="text"] {
+  border: 2px solid black;
+}
+a:hover {
+  color: red;
+}
+-⁠ ⁠Elemen selector & Pseudo element misalnya
+p {
+  color: purple;
+}
+p::first-line {
+  font-weight: bold;
+}
+-⁠ ⁠Urutan Deklarasi misalnya
+p {
+  color: blue;
+}
+p {
+  color: red;
+}
+karena punya spesifisitas yg sama maka aturan yg di pake adalah yg terskhir atau color : red
+
+2.Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+Responsive Design digunakan agar tampilan website dapat menyesuaikan ukuran layar perangkat pengguna secara otomatis
+Hal ini penting karena
+-⁠ ⁠User Experience jika kita dia menggumam responsive design maka saat user membuka di 2 perangkat berbeda bisa saja di salah satu perangkat layout berantakan ataupun tombol sulit untuk di tekan
+-⁠ ⁠Efisiensi Pengembangan karena dengan menggunakan responsive design maka kita tidak perlu membuat 2 aplikasi web berbeda untuk versi dekstop dan versi mobile, sehingga akan menghemat biaya pengeluaran dan waktu
+
+#Contoh aplikasi yg sudah menerapkan responsive design adalah salah satu e-commerce yaitu shopee dimana jika kita membuka web shopee melalui laptop maka produk yang di tampilkan akan lebih banyak dengan grid besar sedangkan saat kita membuka shopee di hp grid tersebut berubah menjadi 1-2 kolom, tombol lebih besar sehingga lebih nyaman untuk digunakan dengan jari
+
+#Contoh aplikasi yang belum menerapkan Responsive Design misalnya web pemerintahan lama, dimana jika kita buka di laptop halaman web akan terlihat baik dan masih aman tetapi kalau kita buka di hp teks menjadi terlalu kecil dan tombol pun lebih sulit untuk di tekan
+
+3.Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Dalam CSS Box Model elemen elemen HTML di anggap sebagai kotak yang terdiri atas beberapa
+lapisan
+1.⁠ ⁠Margin adalah ruang border elemen, fungsi utamanya adalah memberi jarak antar elemen serta margin ini tidak terlihat
+2.⁠ ⁠Border adalah garis pembatas di sekeliling padding serta content, border dapat di customize misalnya diberi warna atau sebuah style yg berbeda
+3.⁠ ⁠Padding adalah ruang antara content dan border fungsi utamanya adalah agar teks ataupun gambar yang berada di content tidak terlalu mepet dengan border
+Ke tiga lapisan tersebut dapat di implementasikan seperti ini
+.box {
+  margin: 30px;               => jarak antar elemen 
+  padding: 20px;              => ruang di dalam sebelum border 
+  border: 3px dashed blue;    => border biru bergaris putus-putus 
+  background-color: lightyellow;
+}
+
+4.Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+#Flexbox biasanya digunakan untuk mengatur elemen di ukuran satu dimensi seperti baris maupun kolom. Elemen di dalam container juga dapat menyesuaikan ruang kosong secara otomatis. Flexbox paling tepat digunakan ketika layout masih sederhana dimana hanya membutuhkan pengaturan baris maupun kolom, misalnya sperti navbar, tomobol sejajar, dll
+
+#Grid layout biasanya digunakan untuk mengatur elemen di ukuran dua dimensi yaitu baris dan kolom secara sekaligus. Grid layout sangat cocok digunakan ketika layout sudah kompleks, misalnya layout suatu page sudah penuh yaitu ada dashboard, blog, ataupun portal berita
+
+5.Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+-Menambahkan tailwind ke aplikasi, dengan menambahkan tag <meta name="viewport"> pada base.html, kemudian kita perlu menyambungkan template django dan tailwind dengan memnafatakan script CDN dari tailwind
+-Membuat fungsi baru yaitu edit_product, menambahkan ke path ulrs, membuat html baru yaitu edit_product.html, seerta menambahkan tombol edit_product di product_list.html
+-MMembuat fungsi baru yaitu delete_product, menambahkan ke path ulrs, seerta menambahkan tombol delete_product di product_list.html
+-Membuat html baru untuk navigation bar bernama navbar.html di folder templates pada root directory, menautkan navbar ke base.html agar tidak perlu include 1 1 ke html ainnya
+-Menambahkan middleware WhiteNoise agar django bisa mengelola file statis secara otomatis tanpa perlu konfigurasi kompleks
+-Membuat folder baru yaitu static/css dan menambahkan file global.css ke dalam folder css, menambahkan file global.css ke dalam base.html
+-Membuat beberapa kostumisasi di styling global.css 
+-Menambahkan folder image di static dan memasukkan foto error.png untuk ditampilkan ketika user belum memiliki produk 
+-Mengkostumisasi navbar, halaman login, halaman register, homepage
+-Menambahkan button untuk melihat "my prdoucts" di product_list, jika user belum punya produk akan di tampilkan gambar error.png yg tadi
+-Mengkostumisasi product_detils, add product, edit product
+-Melakukan add, commit, push

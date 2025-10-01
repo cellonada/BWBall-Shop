@@ -1,14 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
+{% comment %} {% include 'navbar.html' %} {% endcomment %}
 
-<h1>Hello {{ current_user }}, Welcome to BWBall Shop</h1>
-
-<a href="{% url 'main:score_board' %}"><button>Score Board</button></a>
-<a href="{% url 'main:product_list' %}"><button>Our Product</button></a>
-
-
-<a href="{% url 'main:logout' %}"><button>Logout</button></a>
-<h5>Sesi terakhir login: {{ last_login }}</h5>
+<div class="w-full mt-10 px-6" style="background-color: #FBF9E4; min-height: 100vh;">
+   
+    {% comment %} <h1 class="text-5xl font-extrabold mb-4" style="color:#122C4F;">
+        {{ product.name }}
+      </h1> {% endcomment %}
+<div class="mb-8">
+    <h1 class="text-5xl font-extrabold text-gray-900 mb-2" style="color:#122C4F;">
+        Hello {{ current_user }}
+      </h1>
+      <p class="text-lg text-gray-600">
+        What are u lookin for today?
+      </p>
+    </div>
+    <section>
+        <h2 class="text-2xl font-bold mb-6 text-center" style="color:#122C4F;">🔥 Top 3 Products 🔥</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {% for product in hot_products %}
+                <div class="bg-white shadow rounded-lg p-4 text-center">
+                    <div class="w-full aspect-square mb-4">
+                        {% if product.thumbnail %}
+                        <img src="{{ product.thumbnail }}" 
+                            alt="{{ product.name }}" 
+                            class="max-w-[300px] w-full h-auto mx-auto rounded-md object-contain">
+                        {% endif %}                  
+                    </div>
+                    <p class="text-lg font-semibold text-gray-800 mb-2">Rp {{ product.price }}</p>
+                    <a href="{% url 'main:product_detail' product.id %}" 
+                        class="px-4 py-2 rounded text-white transition"
+                        style="background-color: #5B88B2;"
+                        onmouseover="this.style.backgroundColor='#4972a0'" 
+                        onmouseout="this.style.backgroundColor='#5B88B2'">
+                        Product Details
+                 </a>
+                </div>
+            {% endfor %}
+        </div>
+        {% if not hot_products %}
+            <p class="text-gray-500 text-center">Belum ada produk favorit</p>
+        {% endif %}
+    </section>
+    <div class="mt-12 text-center text-sm text-gray-500">
+        <p>Sesi terakhir login: {{ last_login }}</p>
+    </div>
+</div>
 
 {% endblock content %}
 

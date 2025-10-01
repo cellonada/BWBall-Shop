@@ -4,7 +4,7 @@
 <div class="min-h-screen flex items-center justify-center p-6" style="background-color:#FBF9E4;">
   <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8" style="background-color:#122C4F;">
     
-    <h1 class="text-3xl font-bold text-[#FBF9E4] mb-6 text-center">Add New Product</h1>
+    <h1 class="text-3xl font-bold text-[#FBF9E4] mb-6 text-center">Edit Product</h1>
     
     <form method="POST" class="space-y-4">
       {% csrf_token %}
@@ -19,18 +19,18 @@
         </div>
       {% endfor %}
 
-      <div class="flex justify-end mt-8 gap-3"> <!-- mt-8 biar jarak dari field terakhir -->
+      <div class="flex justify-end mt-8 gap-3">
         <a href="{% url 'main:product_list' %}">
             <button type="button"
                     class="px-4 py-1 bg-gray-400 text-white font-medium rounded hover:bg-gray-500 transition-colors text-sm">
                 Cancel
             </button>
         </a>
-        <input type="submit" value="Add Product"
+        <input type="submit" value="Save Changes"
                class="px-4 py-1 bg-[#5B88B2] text-white font-medium rounded hover:bg-[#122C4F] cursor-pointer transition-colors text-sm" />
       </div>
     </form>
+    
   </div>
 </div>
-
 {% endblock %}

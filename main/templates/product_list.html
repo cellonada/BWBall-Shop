@@ -1,39 +1,100 @@
 {% extends 'base.html' %}
+{% load static %} 
 {% block content %}
 
-<p><a href="{% url 'main:show_main' %}"><button>← Back to Home Page</button></a></p>
+<div class="w-full min-h-screen p-6" style="background-color:#FBF9E4;">
+    <div class="mb-6">
+        <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            ← Back to Home Page
+        </a>
+    </div>
 
-<div style="display: flex; gap: 10px; margin-bottom: 20px;"> 
-    <!-- Pake Flexbox buat ngatur biar 1 garis dan rapih jaraknya -->
-    <a href="{% url 'main:product_list' %}?filter=favorite"><button {% if filter_type == "favorite" %}disabled{% endif %}>Favorite</button></a>
-    <a href="{% url 'main:product_list' %}?filter=unfavorite"><button {% if filter_type == "unfavorite" %}disabled{% endif %}>Unfavorite</button></a>
-    <a href="{% url 'main:product_list' %}?filter=all"><button {% if filter_type == "all" %}disabled{% endif %}>All Products</button></a>
-</div>
-
-<div>
-    <a href="{% url 'main:add_product' %}"><button>+ Add Product</button></a>
-</div>
-
-<hr>
-
-{% if products %}
-    {% for product in products %}
-        <div>
-            <h3>{{ product.name }} - ⭐️ {{ product.rating }}</h3>
-            <p>{{ product.description }}</p>
-            
-            {% if product.thumbnail %}
-                <img src="{{ product.thumbnail }}" alt="Product thumbnail" width="100"><br /><br />
-            {% endif %}
-            <p>Kategori: {{ product.category }}</p>
-            <p>Harga: {{ product.price }}</p>
-            <a href="{% url 'main:product_detail' product.id %}">
-                <button>See Details</button>
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex gap-3">
+            <a href="{% url 'main:product_list' %}?filter=favorite">
+                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "favorite" %}disabled{% endif %}>
+                    Favorite
+                </button>
+            </a>
+            <a href="{% url 'main:product_list' %}?filter=all">
+                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "all" %}disabled{% endif %}>
+                    All Products
+                </button>
+            </a>
+            <a href="{% url 'main:product_list' %}?filter=my">
+                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "my" %}disabled{% endif %}>
+                    My Products
+                </button>
             </a>
         </div>
-        <hr>
-    {% endfor %}
-{% else %}
-    <p>Belum ada produk tersedia untuk kategori ini</p>
-{% endif %}
+
+        <div>
+            <a href="{% url 'main:add_product' %}">
+                <button class="px-3 py-1 rounded text-sm font-medium text-white bg-gray-600 hover:bg-gray-700">
+                    + Add Product
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <hr class="mb-6 border-gray-300">
+
+    {% if products %}
+        {% for product in products %}
+            <div class="bg-white rounded-lg p-4 mb-4 shadow-sm">
+                <div class="flex items-center gap-2 mb-2">
+                    <h2 class="text-2xl font-bold text-[#122C4F]">{{ product.name }}</h2>
+                    <span class="text-lg font-semibold text-[#122C4F]">⭐️ {{ product.rating }}</span>
+                </div>
+
+                {% if product.thumbnail %}
+                    <div class="my-4">
+                        <img src="{{ product.thumbnail }}" alt="Product thumbnail" class="w-40 h-auto rounded">
+                    </div>
+                {% endif %}
+
+                <div class="flex gap-6 text-gray-700 mb-2">
+                    <p><b>Harga:</b> Rp {{ product.price }}</p>
+                    <p><b>Stock:</b> {{ product.stock }}</p>
+                </div>
+
+                <p class="mb-2 text-gray-800">{{ product.description }}</p>
+
+                <div class="flex items-center gap-2 mb-2">
+                    <a href="{% url 'main:product_detail' product.id %}">
+                        <button class="px-3 py-1 rounded text-white bg-[#5B88B2] hover:bg-[#122C4F] text-sm">
+                            Product Details
+                        </button>
+                    </a>
+
+                    {% if user.is_authenticated and product.user == user %}
+                        <a href="{% url 'main:edit_product' product.pk %}">
+                            <button class="px-3 py-1 rounded text-white bg-gray-500 hover:bg-gray-700 text-sm">Edit</button>
+                        </a>
+                        <a href="{% url 'main:delete_product' product.pk %}">
+                            <button class="px-3 py-1 rounded text-white bg-red-500 hover:bg-red-600 text-sm">Delete</button>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <p class="text-sm text-gray-500">
+                    Author: 
+                    {% if product.user %}
+                        {{ product.user.username }}
+                    {% else %}
+                        Anonymous
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        {% if filter_type == "my" %}
+            <div class="text-center mt-8">
+                <img src="{% static 'image/error.png' %}" alt="No Products" style="width:600px; height:auto;" class="mx-auto">
+            </div>
+        {% else %}
+            <p>Belum ada produk tersedia untuk kategori ini.</p>
+        {% endif %}
+    {% endif %}
+</div>
 {% endblock %}
