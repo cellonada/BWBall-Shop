@@ -229,3 +229,33 @@ Ke tiga lapisan tersebut dapat di implementasikan seperti ini
 -Menambahkan button untuk melihat "my prdoucts" di product_list, jika user belum punya produk akan di tampilkan gambar error.png yg tadi
 -Mengkostumisasi product_detils, add product, edit product
 -Melakukan add, commit, push
+
+
+---------------------- R E A D M E T U G A S 6 -----------------------------
+1.Apa perbedaan antara synchronous request dan asynchronous request?
+-Synchronous request => proses request berjalan sesuai urutan request, dimana program akan menunggu hingga server mengirimkan respons sebelum mengeksekusi perintah selanjutnya. Alur eksekusi biasa disebut juga blocking. Contohnya yakni saat kita melakukan panggilan telfon ke seseorang, ketika menunggu orang tersebut memberikan respons/mengangkat telfonnya kita tidak dapat melakukan hal lain.
+-Asynchronous request => proses request dapat terus berjalan walau masih menunggu server memberikan respons. alur eksekusi biasa di sebut juga dengan non-blocking. Contohnya adalah kita dapat mengirimkan pesan kepada orang lain sambil melakukan kegiatan lain tetapi masih bisa mendapatkan respons dari orang tersebut.
+
+2.Bagaimana AJAX bekerja di Django (alur request–response)?
+AJAX merupakan teknologi yang menggabungkan JavaScript, HTML, DOM, dan web browser agar komunikasi dengan server tetap berjalan tanpa perlu me-reload halaman. Alur kerja AJAX di Django adalah
+-Sebuah event terjadi di halaman web misalnya pengguna menekan sebuah button
+-JavaScript akan membuat XMLHttpReqeuest untuk mengirimkan request ke server Django dengan URL tertentu
+-Request tersebut akan di terima oleh views dan kemudian views akan memproses semua data atau request yang diberikan
+-Setelah selesai memproses request maka server Django akan mengirimkan respon kembali ke web browser dalam format JSON ataupun XML
+-Respon tersebut di terima oleh JavaScript dan akan memperbaharui halaman web seperti request yang diminta
+
+3.Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+-AJAX akan hanya akan memperbaharui bagian tertentu tidak memuat ulang seluruh halaman sehingga terasa lebih responsif
+-Lebih efisien karena data yang dikirimkan antara browser dan server hanya sebagain bukan keseluruhan HTML
+-Meningkatkan user experience karena user dapat berinteraksi dengan halaman secara dinamis
+-AJAX dapat memvalidasi input form secara otomatis ketika user mengetik tanpa user harus mengirimkan sebuah formulir
+-API berbasis data yang disediakan oleh Django dapat digunakan di berbagai platform seperti web application maupun mobile phone
+
+4.Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+-Menggunakan authentication bawaan dari Django dimana untuk sistem login dan register akan dilakukan hashing password, session management, dll
+-Membatasi dan memvalidasi response AJAX dimana hanya mengirimkan data yg diperlukan seperti saat berhasil atau gagal bukan mengirimkan data sensitif seperti password ataupun token session.
+-Gunakan CSRF Token dimana Django memiliki sistem proteksi CSRF bawaan untuk memastikan setiap request hanya di terima dari sumber yang sah
+-Tetap melakukan validasi utama walaupun terdapat JavaScript untuk membantu hal ini agar terhindar dari input berbahaya speerti XSS
+
+5.Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+AJAX mmebuat interaksi web menjadi lebih responsif dan dinamis. User tidak perlu menunggu proses request selesai di eksekui sehingga pengguna akan merasa lebih nyaman. User juga tidak perlu menunggu reload seluruh halaman setiap kali terjadi sesutau, sehingga proses memuat data atau mengupdate konten akan terasa lebih lancar dan efisien.

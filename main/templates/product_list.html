@@ -1,100 +1,321 @@
 {% extends 'base.html' %}
-{% load static %} 
 {% block content %}
 
-<div class="w-full min-h-screen p-6" style="background-color:#FBF9E4;">
-    <div class="mb-6">
-        <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            ← Back to Home Page
-        </a>
+<div class="p-6 bg-yellow-50 min-h-screen">
+
+  <!-- Buttons -->
+  <div class="flex justify-between mb-6">
+    <div class="flex gap-2">
+      <button onclick="fetchProducts('all')" class="btn-filter px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">All Products</button>
+      <button onclick="fetchProducts('my')" class="btn-filter px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">My Products</button>
+      <button onclick="fetchProducts('favorite')" class="btn-filter px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Favorites</button>
     </div>
-
-    <div class="flex items-center justify-between mb-6">
-        <div class="flex gap-3">
-            <a href="{% url 'main:product_list' %}?filter=favorite">
-                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "favorite" %}disabled{% endif %}>
-                    Favorite
-                </button>
-            </a>
-            <a href="{% url 'main:product_list' %}?filter=all">
-                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "all" %}disabled{% endif %}>
-                    All Products
-                </button>
-            </a>
-            <a href="{% url 'main:product_list' %}?filter=my">
-                <button class="px-4 py-2 rounded text-white font-medium bg-[#122C4F] hover:bg-[#5B88B2]" {% if filter_type == "my" %}disabled{% endif %}>
-                    My Products
-                </button>
-            </a>
-        </div>
-
-        <div>
-            <a href="{% url 'main:add_product' %}">
-                <button class="px-3 py-1 rounded text-sm font-medium text-white bg-gray-600 hover:bg-gray-700">
-                    + Add Product
-                </button>
-            </a>
-        </div>
+    <div class="flex gap-2">
+      <button onclick="openCreateModal()" class="btn-add px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">+ Add Product</button>
+      <button id="refresh-btn" class="btn-refresh px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"> Refresh</button>
     </div>
+  </div>
 
-    <hr class="mb-6 border-gray-300">
+  <!-- Spinner -->
+  <div id="spinner" class="hidden flex justify-center py-10">
+    <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+  </div>
 
-    {% if products %}
-        {% for product in products %}
-            <div class="bg-white rounded-lg p-4 mb-4 shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                    <h2 class="text-2xl font-bold text-[#122C4F]">{{ product.name }}</h2>
-                    <span class="text-lg font-semibold text-[#122C4F]">⭐️ {{ product.rating }}</span>
-                </div>
+  <!-- Product Grid -->
+  <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
 
-                {% if product.thumbnail %}
-                    <div class="my-4">
-                        <img src="{{ product.thumbnail }}" alt="Product thumbnail" class="w-40 h-auto rounded">
-                    </div>
-                {% endif %}
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span>Loading...</span>
+    </div>
+  </div>
 
-                <div class="flex gap-6 text-gray-700 mb-2">
-                    <p><b>Harga:</b> Rp {{ product.price }}</p>
-                    <p><b>Stock:</b> {{ product.stock }}</p>
-                </div>
-
-                <p class="mb-2 text-gray-800">{{ product.description }}</p>
-
-                <div class="flex items-center gap-2 mb-2">
-                    <a href="{% url 'main:product_detail' product.id %}">
-                        <button class="px-3 py-1 rounded text-white bg-[#5B88B2] hover:bg-[#122C4F] text-sm">
-                            Product Details
-                        </button>
-                    </a>
-
-                    {% if user.is_authenticated and product.user == user %}
-                        <a href="{% url 'main:edit_product' product.pk %}">
-                            <button class="px-3 py-1 rounded text-white bg-gray-500 hover:bg-gray-700 text-sm">Edit</button>
-                        </a>
-                        <a href="{% url 'main:delete_product' product.pk %}">
-                            <button class="px-3 py-1 rounded text-white bg-red-500 hover:bg-red-600 text-sm">Delete</button>
-                        </a>
-                    {% endif %}
-                </div>
-
-                <p class="text-sm text-gray-500">
-                    Author: 
-                    {% if product.user %}
-                        {{ product.user.username }}
-                    {% else %}
-                        Anonymous
-                    {% endif %}
-                </p>
-            </div>
-        {% endfor %}
-    {% else %}
-        {% if filter_type == "my" %}
-            <div class="text-center mt-8">
-                <img src="{% static 'image/error.png' %}" alt="No Products" style="width:600px; height:auto;" class="mx-auto">
-            </div>
-        {% else %}
-            <p>Belum ada produk tersedia untuk kategori ini.</p>
-        {% endif %}
-    {% endif %}
 </div>
+
+
+<!-- Toast Notification -->
+<div id="toast-container" class="fixed top-4 right-4 z-50 space-y-3"></div>
+
+<style>
+  .toast {
+    background-color: #FBF9E4; /* Pearl Perfect */
+    color: #122C4F; /* Midnight for readable text */
+    border-left: 6px solid; /* soft indicator */
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 280px;
+    animation: fadeInUp 0.3s ease forwards, fadeOut 0.4s ease 2.6s forwards;
+  }
+
+  /* Warna garis lembut di kiri (tipe notifikasi) */
+  .toast-success { border-color: #5B88B2; }   /* Ocean */
+  .toast-error { border-color: #C85C5C; }     /* Soft red */
+  .toast-warning { border-color: #E0A458; }   /* Soft amber */
+  .toast-info { border-color: #708090; }      /* Gray */
+
+  @keyframes fadeInUp {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fadeOut {
+    to { transform: translateY(-10px); opacity: 0; }
+  }
+</style>
+
+<script>
+  function showToast(message, type = "success") {
+    const container = document.getElementById("toast-container");
+
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+      <span class="font-medium">${message}</span>
+      <button class="ml-3 text-sm opacity-70 hover:opacity-100" onclick="this.parentElement.remove()">✕</button>
+    `;
+
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+</script>
+
+
+<!-- Modal Add/Edit -->
+<div id="product-modal" class="fixed inset-0 bg-black/50 hidden justify-center items-center z-50">
+  <div class="bg-white p-6 rounded-xl w-96">
+    <h2 id="modal-title" class="text-xl font-semibold mb-4">Add Product</h2>
+    <form id="product-form">
+      <input type="hidden" id="product-id">
+      <input type="text" id="name" name="name" placeholder="Name" class="w-full p-2 border rounded">
+      <input type="text" id="category" name="category" placeholder="Category" class="w-full p-2 border rounded mt-2">
+      <input type="number" id="price" name="price" placeholder="Price" class="w-full p-2 border rounded mt-2">
+      <input type="number" id="stock" name="stock" placeholder="Stock" class="w-full p-2 border rounded mt-2">
+      <textarea id="description" name="description" placeholder="Product Description" class="w-full p-2 border rounded mt-2" rows="3"></textarea>
+      <input type="text" id="thumbnail" name="thumbnail" placeholder="Image URL" class="w-full p-2 border rounded mt-2">
+      <label class="flex items-center gap-2 mt-2">
+        <input type="checkbox" id="is_favorite" name="is_favorite"> Favorite
+      </label>
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Ambil CSRF token dari cookie
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+</script>
+
+<script>
+const spinner = document.getElementById("spinner");
+const grid = document.getElementById("product-grid");
+const modal = document.getElementById("product-modal");
+const form = document.getElementById("product-form");
+
+function showSpinner(){spinner.classList.remove("hidden"); grid.classList.add("hidden");}
+function hideSpinner(){spinner.classList.add("hidden"); grid.classList.remove("hidden");}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const refreshButton = document.querySelector('#refresh-btn'); // Selector berdasarkan ID (pastikan tambah id="refresh-btn" di HTML)
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const productContainer = document.getElementById('product-grid'); // Selector kontainer daftar produk (sesuaikan jika perlu)
+  
+  // Pengecekan elemen kunci
+  if (!refreshButton) {
+    console.error('Tombol refresh dengan ID #refresh-btn tidak ditemukan!');
+    return;
+  }
+  if (!loadingOverlay) {
+    console.error('Elemen loading-overlay tidak ditemukan!');
+    return;
+  }
+  if (!productContainer) {
+    console.warn('Kontainer #product-list tidak ditemukan; update DOM akan dilewati.');
+  }
+  
+  refreshButton.addEventListener('click', function(event) {
+    event.preventDefault(); // Cegah perilaku default
+    
+    // Disable tombol untuk hindari multiple click
+    refreshButton.disabled = true;
+    refreshButton.textContent = 'Refreshing...';
+    
+    // Tampilkan loading
+    loadingOverlay.style.display = 'flex';
+    loadingOverlay.textContent = 'Loading...';
+    
+    // Kirim request AJAX
+    fetch('/ajax/products/get/?filter=all', {  // Ganti dengan endpoint API Anda
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // Tambah CSRF jika diperlukan
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json(); // Ganti ke .text() jika response HTML
+    })
+    .then(data => {
+      console.log('Data refresh berhasil:', data); // Debug
+      
+      // Update DOM (hanya jika kontainer ada)
+      if (productContainer) {
+        productContainer.innerHTML = ''; // Kosongkan
+        data.products.forEach(p=>{
+          const ownerBtns = p.user_username === "{{request.user.username}}" ? `
+            <button onclick="editProduct(${p.id})" class="px-3 py-1 bg-yellow-400 text-white rounded">Edit</button>
+            <button onclick="deleteProduct(${p.id})" class="px-3 py-1 bg-red-500 text-white rounded">Delete</button>` : '';
+          const card = `
+          <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg">
+            <img src="${p.thumbnail}" class="w-full h-40 object-cover rounded mb-2">
+            <h2 class="font-semibold">${p.name}</h2>
+            <p>${p.category}</p>
+            <p>💰 Rp ${p.price} | 📦 ${p.stock}</p>
+            <p>${p.description?.substring(0,100) ?? ''}</p>
+            <div class="flex gap-2 mt-2">${ownerBtns}</div>
+          </div>`;
+          productContainer.insertAdjacentHTML("beforeend", card);
+        });
+      }
+
+    })
+    .catch(error => {
+      console.error('Error refreshing products:', error);
+      alert('Gagal merefresh data. Silakan coba lagi.');
+    
+    })
+    .finally(() => {
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+        refreshButton.disabled = false;
+        refreshButton.textContent = 'Refresh';
+      }, 2000);
+    });
+  });
+});
+
+// Fetch products
+async function fetchProducts(filter='all'){
+  showSpinner();
+  try {
+    const res = await fetch(`/ajax/products/get/?filter=${filter}`);
+    const data = await res.json();
+    grid.innerHTML = "";
+    data.products.forEach(p=>{
+      const ownerBtns = p.user_username === "{{request.user.username}}" ? `
+        <button onclick="editProduct(${p.id})" class="px-3 py-1 bg-yellow-400 text-white rounded">Edit</button>
+        <button onclick="deleteProduct(${p.id})" class="px-3 py-1 bg-red-500 text-white rounded">Delete</button>` : '';
+      const card = `
+      <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg">
+        <img src="${p.thumbnail}" class="w-full h-40 object-cover rounded mb-2">
+        <h2 class="font-semibold">${p.name}</h2>
+        <p>${p.category}</p>
+        <p>💰 Rp ${p.price} | 📦 ${p.stock}</p>
+        <p>${p.description?.substring(0,100) ?? ''}</p>
+        <div class="flex gap-2 mt-2">${ownerBtns}</div>
+      </div>`;
+      grid.insertAdjacentHTML("beforeend", card);
+    });
+  } catch(e){console.error(e);}
+  finally{hideSpinner();}
+}
+
+// Open Add Product Modal
+function openCreateModal(){
+  modal.classList.remove("hidden");
+  document.getElementById("modal-title").textContent = "Add Product";
+  form.reset();
+  document.getElementById("product-id").value = "";
+}
+
+// Close Modal
+function closeModal(){modal.classList.add("hidden");}
+
+// Submit Add/Edit Form
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const id = document.getElementById("product-id").value;
+  const url = id ? `/ajax/products/update/${id}/` : `/ajax/products/create/`;
+  const formData = new FormData(form);
+  const res = await fetch(url, {
+    method: "POST",
+    body: formData,
+    headers: {
+      'X-CSRFToken': csrftoken  // << penting
+    }
+  });
+  const data = await res.json();
+  if (data.status === "success") {
+    closeModal();
+    fetchProducts();
+    showToast(id ? "Product updated successfully!" : "Product added successfully!", "success");
+  } else {
+    showToast(data.message || "Error saving product", "error");
+  }  
+});
+
+// Edit Product
+function editProduct(id){
+  fetch(`/ajax/products/get/`)
+  .then(res=>res.json())
+  .then(data=>{
+    const p = data.products.find(x=>x.id===id);
+    if(!p) return;
+    modal.classList.remove("hidden");
+    document.getElementById("modal-title").textContent="Edit Product";
+    document.getElementById("product-id").value=p.id;
+    document.getElementById("name").value=p.name;
+    document.getElementById("category").value=p.category;
+    document.getElementById("price").value=p.price;
+    document.getElementById("stock").value=p.stock;
+    document.getElementById("thumbnail").value=p.thumbnail;
+    document.getElementById("is_favorite").checked=p.is_favorite;
+  });
+}
+
+// Delete Product
+function deleteProduct(id){
+  if(!confirm("Are you sure?")) return;
+  fetch(`/ajax/products/delete/${id}/`, {
+    method: "POST",
+    headers: {'X-CSRFToken': csrftoken}
+  })  
+  .then(res=>res.json())
+  .then(data=>{
+    if (data.status === "success") {
+      fetchProducts();
+      showToast("Product deleted successfully!", "warning");
+    } else {
+      showToast(data.message || "Error deleting product", "error");
+    }
+  });  
+}
+
+// Initial load
+document.addEventListener("DOMContentLoaded", ()=>fetchProducts());
+</script>
+
 {% endblock %}
