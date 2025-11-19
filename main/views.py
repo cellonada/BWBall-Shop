@@ -14,6 +14,9 @@ from main.forms import ProductForm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+import requests
+import json
+from django.utils.html import strip_tags
 
 # Create your views here.
 @login_required(login_url='/login')
@@ -246,4 +249,44 @@ def delete_product_ajax(request, id):
     product.delete()
     return JsonResponse({"status":"success"})
 
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+    
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        new_product = Product(
+            name = data.get("name"),
+            price = data.get("price"),
+            description = data.get("description"),
+            thumbnail = data.get("thumbnail"),
+            category = data.get("category"),
+            is_featured = data.get("is_featured", False),
+            is_favorite = data.get("is_favorite", False),
+            stock = data.get("stock", 0),
+            rating = data.get("rating", 0),
+            user = request.user,
+        )
+        new_product.save()
+
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error"}, status=400)
 

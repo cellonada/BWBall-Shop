@@ -31,7 +31,7 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 
 #Buat push ulang kesekian kalinya heem
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"] #hanya bisa di akses di jaringan aku aja
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id", "10.0.2.2"] #hanya bisa di akses di jaringan aku aja
 
 CSRF_TRUSTED_ORIGINS = [
     "https://zhafira-cellonada-bwballshop.pbp.cs.ui.ac.id"
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'authentication',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'BWBall_shop.urls'
@@ -81,6 +84,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BWBall_shop.wsgi.application'
 
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -157,5 +166,7 @@ else:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 #komen buat push github
